@@ -118,6 +118,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# This is used ot define any kind of images or videos.
+
+MEDIA_URL = 'images/'
+
 # This is to let django know about the recently created static files as we need to configure them.
 
 STATICFILES_DIR = [
