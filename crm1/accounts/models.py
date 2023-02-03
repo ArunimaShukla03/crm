@@ -4,8 +4,11 @@ from django.db import models
 
 class Customer(models.Model):
     name = models.CharField(max_length=200, null=True)
+
     phone = models.CharField(max_length=200, null=True)
+
     email = models.CharField(max_length=200, null=True)
+
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     # We want to now see the name of the customers instead of just "Customer object(1)" in the admin panel. Thus we do the following for the same.
@@ -27,10 +30,15 @@ class Product(models.Model):
     )
 
     name = models.CharField(max_length=200, null=True)
+
     price = models.FloatField(null = True)
+
     category = models.CharField(max_length=200, null=True, choices=CATEGORY)
+
     description = models.CharField(max_length=200, null=True, blank=True) 
+
     date_created = models.DateTimeField(auto_now_add=True, null=True)
+
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
@@ -55,4 +63,3 @@ class Order(models.Model):
 
     status = models.CharField(max_length=200, null=True, choices=STATUS)
 
-    # code
