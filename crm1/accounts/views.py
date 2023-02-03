@@ -28,5 +28,15 @@ def products(request):
         'products':products
     })
 
-def customer(request):
-    return render(request, 'accounts/customer.html')
+# Here we also pass in the primary key which decides what template to return to the user.
+
+def customer(request, pk):
+    customer = Customer.objects.get(id=pk)
+
+    orders = customer.order_set.all()
+
+    total_customer_orders = orders.count()
+
+    context = {'customer':customer, 'orders':orders, 'total_customer_orders':total_customer_orders}
+
+    return render(request, 'accounts/customer.html', context)
