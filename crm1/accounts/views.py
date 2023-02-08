@@ -82,6 +82,12 @@ def updateOrder(request, pk_test):
 
 def deleteOrder(request, primary_key):
 
-    context={}
+    order = Order.objects.get(id=primary_key)
+
+    if request.method == "POST":
+        order.delete()
+        return redirect('/')        
+
+    context={'item': order}
 
     return render(request, 'accounts/delete_form.html', context)

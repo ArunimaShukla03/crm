@@ -4,11 +4,22 @@
 
 <!-- The "action" attribute is used to specify the URL where the form data should be sent for processing. -->
 
-<form action="" method="POST">
-    {% csrf_token %}
-    {{form}}
-     
-    <input type="submit" name="Submit">
-</form>
+<br>
+
+<div class="row">
+    <div class="col-md-10">
+        <div class="card card-body">
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{form}}
+                
+                <input type="submit" name="Submit">
+            </form>
+
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}
