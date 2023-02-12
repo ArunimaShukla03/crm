@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+
 class Customer(models.Model):
     name = models.CharField(max_length=200, null=True)
 
@@ -23,6 +24,7 @@ class Tag(models.Model):
         return self.name
 
 class Product(models.Model):
+
     CATEGORY = (
         ('Indoor', 'Indoor'),
         ('Out Door', 'Out Door'),
@@ -44,6 +46,7 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    
     # We want the dropdown menu for "status"
 
     STATUS = (
