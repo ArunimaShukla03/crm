@@ -127,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# This is used ot define any kind of images or videos.
+# This is used to define any kind of images or videos.
 
 MEDIA_URL = 'images/'
 

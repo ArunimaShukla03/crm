@@ -9,6 +9,8 @@ class Customer(models.Model):
 
     email = models.CharField(max_length=200, null=True)
 
+    # "auto_now_add" creates a snapshot of date and time when the customer is added.
+
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     # We want to now see the name of the customers instead of just "Customer object(1)" in the admin panel. Thus we do the following for the same.
