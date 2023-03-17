@@ -11,7 +11,15 @@
 
             <form action="" method="POST">
                 {% csrf_token %}
-                {{form}}
+
+                {{formset.management_force}}
+
+                <!--This is added as we are filling the form as a loop so it helps send the data in a different way otherwise it will show an error. -->
+
+                {% for form in formset %}
+                    {{form}}
+                    <hr>
+                {% endfor %}
                 
                 <input type="submit" name="Submit">
             </form>

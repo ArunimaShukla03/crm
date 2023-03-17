@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.forms import inlineformset_factory
+
+# Basically formsets are used to create multiple forms within one form.
+
 from .models import *
 from .forms import OrderForm
 from .urls import *
@@ -43,18 +47,35 @@ def customer(request, pk):
 
     return render(request, 'accounts/customer.html', context)
 
-def createOrder(request):
+def createOrder(request,pk_customer):
+    OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=3)
 
-    form = OrderForm()
+    # 'Inline formsets' have the parent (here 'Customer'), the child (here 'Order') and then the fields that we need from that respective child.
+
+    # The 'extra' is added to show the amount of additional fields that can be added to a for.
+
+    customer = Customer.objects.get(id=pk_customer)
+
+    formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
+
+    # This is basically saying that if we have objects then don't reference them and just let it all be the new items.
+    
+    # form = OrderForm(initial={'customer':customer})
+
+    # 'Instance' is used to pre-fill the form fields with data from an existing database while 'Initial' is basically initial data or used to pre-fill the form fields with default values.
 
     if request.method == "POST" :
-       form = OrderForm(request.POST)
+       formset = OrderFormSet(request.POST,instance=customer)
 
-       if form.is_valid():
-        form.save()
+       # form = OrderForm(request.POST)
+
+       if formset.is_valid():
+        formset.save()
         return redirect('/')
+       
+       # Here we have '/' as the URL pattern which means that it will redirect to the home page.
 
-    context = {'form':form}
+    context = {'formset':formset}
 
     return render(request, 'accounts/order_form.html', context)
 
