@@ -12,7 +12,7 @@
             <form action="" method="POST">
                 {% csrf_token %}
 
-                {{formset.management_force}}
+                {{formset.management_form}}
 
                 <!--This is added as we are filling the form as a loop so it helps send the data in a different way otherwise it will show an error. -->
 
