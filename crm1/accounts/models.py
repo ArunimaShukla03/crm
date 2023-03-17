@@ -67,6 +67,10 @@ class Order(models.Model):
 
     status = models.CharField(max_length=200, null=True, choices=STATUS)
 
+    # As we don't have a model field that can be used to partial search, so to do that we add an additional "company" field.
+
+    company = models.CharField(max_length=200, null=True)
+
     def __str__(self):
         return self.product.name
 

@@ -7,6 +7,7 @@ from django.forms import inlineformset_factory
 from .models import *
 from .forms import OrderForm
 from .urls import *
+from .filters import OrderFilter
 
 # Create your views here.
 
@@ -43,7 +44,22 @@ def customer(request, pk):
 
     total_customer_orders = orders.count()
 
-    context = {'customer':customer, 'orders':orders, 'total_customer_orders':total_customer_orders}
+    myFilter = OrderFilter(request.GET, queryset=orders)
+
+    # We are gonna query all the orders, then throw those into this filter (myFilter) and based on our request data, we are finally going to filter this data down.
+
+    # GET is used to retrieve data and POST is used to send data.
+
+    orders = myFilter.qs
+
+    # This redefines the variable "orders" and finally renders the filtered data.
+
+    # Here, "qs" is the queryset
+
+    context = {'customer':customer, 
+               'orders':orders, 
+               'total_customer_orders':total_customer_orders,
+               'myFilter':myFilter}
 
     return render(request, 'accounts/customer.html', context)
 
@@ -58,7 +74,7 @@ def createOrder(request,pk_customer):
 
     formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
 
-    # This is basically saying that if we have objects then don't reference them and just let it all be the new items.
+    # "queryset=Order.objects.none()" is basically saying that if we have objects then don't reference them and just let it all be the new items.
     
     # form = OrderForm(initial={'customer':customer})
 
