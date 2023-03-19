@@ -9,17 +9,10 @@
     <div class="col-md-10">
         <div class="card card-body">
 
-            <form action="{% url 'create_order' item.id %}" method="POST">
+            <form action="{% url 'update_order' item.id %}" method="POST">
                 {% csrf_token %}
 
-                {{formset.management_form}}
-
-                <!--This is added as we are filling the form as a loop so it helps send the data in a different way otherwise it will show an error. -->
-
-                {% for form in formset %}
                     {{form}}
-                    <hr>
-                {% endfor %}
                 
                 <input type="submit" name="Submit">
             </form>

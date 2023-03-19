@@ -91,7 +91,7 @@ def createOrder(request,pk_customer):
        
        # Here we have '/' as the URL pattern which means that it will redirect to the home page.
 
-    context = {'formset':formset}
+    context = {'formset':formset, 'item': customer}
 
     return render(request, 'accounts/order_form.html', context)
 
@@ -103,7 +103,7 @@ def updateOrder(request, pk_test):
 
     form = OrderForm(instance=order)
 
-    context = {'form':form}
+    context = {'form':form, 'item': order}
 
     if request.method == "POST" :
         # If we write this POST method then it would create a new item rather than updating it so we add in the instance to avoid that. 
@@ -115,7 +115,7 @@ def updateOrder(request, pk_test):
         form.save()
         return redirect('/')
 
-    return render(request, 'accounts/order_form.html', context)
+    return render(request, 'accounts/update_form.html', context)
 
 def deleteOrder(request, primary_key):
 

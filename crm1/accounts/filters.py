@@ -10,6 +10,8 @@ class OrderFilter(django_filters.FilterSet):
 
     end_date = DateFilter(field_name="date_created", lookup_expr="lte")
 
+    # "lte" is less than equal to and "gte" is greater than equal to.
+
     company = CharFilter(field_name="company", lookup_expr='icontains')
 
     # "icontains" means ignore case sensitivity.
