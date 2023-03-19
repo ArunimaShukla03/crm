@@ -5,11 +5,30 @@ from django.forms import inlineformset_factory
 # Basically formsets are used to create multiple forms within one form.
 
 from .models import *
-from .forms import OrderForm
+from .forms import *
 from .urls import *
 from .filters import OrderFilter
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
+
+def registerPage(request):
+   form = CreateUserForm()
+
+   if request.method=="POST":
+      form = CreateUserForm(request.POST)
+
+      if form.is_valid():
+         form.save()
+
+   context = {'form':form}
+
+   return render(request, 'accounts/register.html', context)
+
+def loginPage(request):
+   context = {}
+
+   return render(request, 'accounts/login.html', context)
 
 def home(request):
     orders = Order.objects.all()

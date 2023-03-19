@@ -1,4 +1,9 @@
 from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from django.contrib.auth.models import User
+# This imports the "User" model that is already built-in django.
+
 from .models import Order
 
 class OrderForm(ModelForm):
@@ -11,3 +16,10 @@ class OrderForm(ModelForm):
 
         fields = ['customer', 'products']
         '''
+
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+        # The field can be read from the docs in django.
