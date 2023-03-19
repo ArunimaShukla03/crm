@@ -1,48 +1,103 @@
 from django.shortcuts import render, redirect
+
 from django.http import HttpResponse
+
 from django.forms import inlineformset_factory
-from django.contrib.auth.forms import UserCreationForm
 
 # Basically formsets are used to create multiple forms within one form.
 
+from django.contrib.auth.forms import UserCreationForm
+
+from django.contrib import messages
+
+from django.contrib.auth import login, logout, authenticate
+
+from django.contrib.auth.decorators import login_required
+
+# Login decorators are put above every view that we want to be restricted.
+
 from .models import *
+
 from .forms import OrderForm, CreateUserForm
+
 from .urls import *
+
 from .filters import OrderFilter
 
 # Create your views here.
 
 def registerPage(request):
-   form = CreateUserForm()
+   
+   if request.user.is_authenticated:
+      return redirect('home')
+   
+   else:
+        form = CreateUserForm()
 
-   if request.method == "POST":
-      form = CreateUserForm(request.POST)
+        if request.method == "POST":
+            form = CreateUserForm(request.POST)
 
-      if form.is_valid():
-         form.save()
+            if form.is_valid():
+                form.save()
 
-   context = {'form':form}
+                user = form.cleaned_data.get('username')
 
-   return render(request, 'accounts/register.html', context)
+                # This allows us to get only the username from the form.
 
-'''def registerPage(request):
-   form = CreateUserForm()
+                messages.success(request, "Account was created for '" + user + "'.")
 
-   if request.method == "POST":
-      form = CreateUserForm(request.POST)
+                # Flash message is a way to send one time message to the template.
 
-      if form.is_valid():
-         form.save()
+                # We write this message to make it temporarily hold a value. 
 
-   context = {'form':form}
+                return redirect('login')
 
-   return render(request, 'accounts/register.html', context)'''
+        context = {'form':form}
+
+        return render(request, 'accounts/register.html', context)
+
+        '''def registerPage(request):
+        form = CreateUserForm()
+
+        if request.method == "POST":
+            form = CreateUserForm(request.POST)
+
+            if form.is_valid():
+                form.save()
+
+        context = {'form':form}
+
+        return render(request, 'accounts/register.html', context)'''
 
 def loginPage(request):
-   context = {}
+   
+   if request.user.is_authenticated:
+      return redirect('home')
+   
+   else:   
+        if request.method == "POST":
+            username = request.POST.get("username")
+            password = request.POST.get("password")
 
-   return render(request, 'accounts/login.html', context)
+            user = authenticate(request, username=username, password=password)
 
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            
+            else:
+                messages.info(request, 'Username or Password is incorrect.')
+
+        context = {}
+
+        return render(request, 'accounts/login.html', context)
+
+def logoutUser(request):
+   logout(request)
+   return redirect('login')
+
+@login_required(login_url='login')
+# Without login if we try to access the home page, it will be redirected back to the "login" page.
 def home(request):
     orders = Order.objects.all()
 
@@ -60,6 +115,7 @@ def home(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
+@login_required(login_url='login')
 def products(request):
     products = Product.objects.all()
 
@@ -69,6 +125,7 @@ def products(request):
 
 # Here we also pass in the primary key which decides what template to return to the user.
 
+@login_required(login_url='login')
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
 
@@ -95,6 +152,7 @@ def customer(request, pk):
 
     return render(request, 'accounts/customer.html', context)
 
+@login_required(login_url='login')
 def createOrder(request,pk_customer):
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=3)
 
@@ -127,6 +185,7 @@ def createOrder(request,pk_customer):
 
     return render(request, 'accounts/order_form.html', context)
 
+@login_required(login_url='login')
 def updateOrder(request, pk_test):
 
     order = Order.objects.get(id=pk_test)
@@ -149,6 +208,7 @@ def updateOrder(request, pk_test):
 
     return render(request, 'accounts/update_form.html', context)
 
+@login_required(login_url='login')
 def deleteOrder(request, primary_key):
 
     order = Order.objects.get(id=primary_key)
