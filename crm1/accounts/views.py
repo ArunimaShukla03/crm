@@ -1,21 +1,21 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm
 
 # Basically formsets are used to create multiple forms within one form.
 
 from .models import *
-from .forms import *
+from .forms import OrderForm, CreateUserForm
 from .urls import *
 from .filters import OrderFilter
-from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 
 def registerPage(request):
    form = CreateUserForm()
 
-   if request.method=="POST":
+   if request.method == "POST":
       form = CreateUserForm(request.POST)
 
       if form.is_valid():
@@ -24,6 +24,19 @@ def registerPage(request):
    context = {'form':form}
 
    return render(request, 'accounts/register.html', context)
+
+'''def registerPage(request):
+   form = CreateUserForm()
+
+   if request.method == "POST":
+      form = CreateUserForm(request.POST)
+
+      if form.is_valid():
+         form.save()
+
+   context = {'form':form}
+
+   return render(request, 'accounts/register.html', context)'''
 
 def loginPage(request):
    context = {}
