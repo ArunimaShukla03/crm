@@ -91,6 +91,12 @@ def loginPage(request):
         context = {}
 
         return render(request, 'accounts/login.html', context)
+   
+def userPage(request):
+
+    context = {}
+    
+    return render(request, 'accounts/user.html', context)
 
 def logoutUser(request):
    logout(request)
