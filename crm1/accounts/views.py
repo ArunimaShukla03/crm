@@ -14,6 +14,8 @@ from django.contrib.auth import login, logout, authenticate
 
 from django.contrib.auth.decorators import login_required
 
+from .decorators import *
+
 # Login decorators are put above every view that we want to be restricted.
 
 from .models import *
@@ -26,55 +28,50 @@ from .filters import OrderFilter
 
 # Create your views here.
 
+@unauthenticated_user
 def registerPage(request):
    
-   if request.user.is_authenticated:
-      return redirect('home')
-   
-   else:
-        form = CreateUserForm()
+    form = CreateUserForm()
 
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
 
-            if form.is_valid():
-                form.save()
+        if form.is_valid():
+            form.save()
 
-                user = form.cleaned_data.get('username')
+            user = form.cleaned_data.get('username')
 
-                # This allows us to get only the username from the form.
+            # This allows us to get only the username from the form.
 
-                messages.success(request, "Account was created for '" + user + "'.")
+            messages.success(request, "Account was created for '" + user + "'.")
 
-                # Flash message is a way to send one time message to the template.
+            # Flash message is a way to send one time message to the template.
 
-                # We write this message to make it temporarily hold a value. 
+            # We write this message to make it temporarily hold a value. 
 
-                return redirect('login')
+            return redirect('login')
 
-        context = {'form':form}
+    context = {'form':form}
 
-        return render(request, 'accounts/register.html', context)
+    return render(request, 'accounts/register.html', context)
 
-        '''def registerPage(request):
-        form = CreateUserForm()
+    '''def registerPage(request):
+    form = CreateUserForm()
 
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
 
-            if form.is_valid():
-                form.save()
+        if form.is_valid():
+            form.save()
 
-        context = {'form':form}
+    context = {'form':form}
 
-        return render(request, 'accounts/register.html', context)'''
+    return render(request, 'accounts/register.html', context)'''
 
+@unauthenticated_user
+# This doesn't allow the authenticated user to go back to the logic page when we are already logged in.
 def loginPage(request):
-   
-   if request.user.is_authenticated:
-      return redirect('home')
-   
-   else:   
+    
         if request.method == "POST":
             username = request.POST.get("username")
             password = request.POST.get("password")
@@ -104,6 +101,7 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 # Without login if we try to access the home page, it will be redirected back to the "login" page.
+@allowed_users(allowed_roles=['admin'])
 def home(request):
     orders = Order.objects.all()
 
@@ -122,6 +120,7 @@ def home(request):
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def products(request):
     products = Product.objects.all()
 
@@ -132,6 +131,7 @@ def products(request):
 # Here we also pass in the primary key which decides what template to return to the user.
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def customer(request, pk):
     customer = Customer.objects.get(id=pk)
 
@@ -159,6 +159,7 @@ def customer(request, pk):
     return render(request, 'accounts/customer.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createOrder(request,pk_customer):
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=3)
 
@@ -192,6 +193,7 @@ def createOrder(request,pk_customer):
     return render(request, 'accounts/order_form.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk_test):
 
     order = Order.objects.get(id=pk_test)
@@ -215,6 +217,7 @@ def updateOrder(request, pk_test):
     return render(request, 'accounts/update_form.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteOrder(request, primary_key):
 
     order = Order.objects.get(id=primary_key)
