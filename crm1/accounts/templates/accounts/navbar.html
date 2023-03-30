@@ -22,6 +22,8 @@
 
     <ul class="navbar-nav">
 
+      {% if request.user.is_staff %}
+
       <li class="nav-item active">
 
         <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
@@ -33,6 +35,8 @@
         <a class="nav-link" href="{% url 'products' %}">Products</a>
 
       </li>
+
+      {% endif %}
 
         </div>
 

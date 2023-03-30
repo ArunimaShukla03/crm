@@ -1,1 +1,7 @@
-first text file
+- In order to make our user authentication more dynamic, we are going to use built in django groups.
+
+- We are going to put users into certain groups and create authentication based on that.
+
+- We are going to create 2 groups called 'admin' and second called 'customer', as users can be a part of multiple groups, thus we can make our authentication really dynamic.
+
+- We are going to add 'Arunima' into 'admin' group and put 'liltimmy1995' into 'customer' group.

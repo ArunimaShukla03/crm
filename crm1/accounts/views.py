@@ -8,6 +8,8 @@ from django.forms import inlineformset_factory
 
 from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth.models import Group
+
 from django.contrib import messages
 
 from django.contrib.auth import login, logout, authenticate
@@ -37,13 +39,17 @@ def registerPage(request):
         form = CreateUserForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            user = form.save()
 
-            user = form.cleaned_data.get('username')
+            username = form.cleaned_data.get('username')
+
+            group = Group.objects.get(name='customer')
+
+            user.groups.add(group)
 
             # This allows us to get only the username from the form.
 
-            messages.success(request, "Account was created for '" + user + "'.")
+            messages.success(request, "Account was created for '" + username + "'.")
 
             # Flash message is a way to send one time message to the template.
 
@@ -101,7 +107,7 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 # Without login if we try to access the home page, it will be redirected back to the "login" page.
-@allowed_users(allowed_roles=['admin'])
+@admin_only
 def home(request):
     orders = Order.objects.all()
 
