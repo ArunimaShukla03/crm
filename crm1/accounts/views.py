@@ -43,12 +43,18 @@ def registerPage(request):
 
             username = form.cleaned_data.get('username')
 
+            # This allows us to get only the username from the form.
+
             group = Group.objects.get(name='customer')
 
             user.groups.add(group)
 
-            # This allows us to get only the username from the form.
+            Customer.objects.create(user = user,
 
+                # This means that the "user" in the "customer" model which is actually the "User" is now equal to the "this_user" just created.
+
+                name=user.username)
+            
             messages.success(request, "Account was created for '" + username + "'.")
 
             # Flash message is a way to send one time message to the template.
@@ -94,12 +100,6 @@ def loginPage(request):
         context = {}
 
         return render(request, 'accounts/login.html', context)
-   
-def userPage(request):
-
-    context = {}
-    
-    return render(request, 'accounts/user.html', context)
 
 def logoutUser(request):
    logout(request)
@@ -124,6 +124,24 @@ def home(request):
     context = {'orders':orders, 'customers':customers, 'total_orders':total_orders, 'delivered_orders':delivered_orders, 'pending_orders':pending_orders}
 
     return render(request, 'accounts/dashboard.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
+def userPage(request):
+
+    orders = request.user.customer.order_set.all()
+
+    # Here "customer" is the parent model and "order" is the child model.
+
+    total_orders = orders.count()
+
+    delivered_orders = orders.filter(status='Delivered').count()
+
+    pending_orders = orders.filter(status='Pending').count()
+    
+    context = {'orders':orders, 'total_orders':total_orders, 'delivered_orders':delivered_orders, 'pending_orders':pending_orders}
+
+    return render(request, 'accounts/user.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

@@ -1,8 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Customer(models.Model):
+
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+
+    # This one to one field means that the user can have one customer and the customer can only have one user.
+
+    # "models.CASCADE" means that whenever the User is deleted, it deletes the relationship to the customer.
+
     name = models.CharField(max_length=200, null=True)
 
     phone = models.CharField(max_length=200, null=True)
@@ -14,9 +22,6 @@ class Customer(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     # We want to now see the name of the customers instead of just "Customer object(1)" in the admin panel. Thus we do the following for the same.
-
-    def __str__(self):
-        return self.name
 
 
 class Tag(models.Model):
