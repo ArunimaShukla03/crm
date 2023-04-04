@@ -51,9 +51,9 @@ def registerPage(request):
 
             Customer.objects.create(user = user,
 
-                # This means that the "user" in the "customer" model which is actually the "User" is now equal to the "this_user" just created.
+                # This means that the "user" in the "customer" model which is actually the "User" is now equal to the "user" just created.
 
-                name=user.username)
+            name=user.username)
             
             messages.success(request, "Account was created for '" + username + "'.")
 
@@ -85,7 +85,9 @@ def registerPage(request):
 def loginPage(request):
     
         if request.method == "POST":
+
             username = request.POST.get("username")
+
             password = request.POST.get("password")
 
             user = authenticate(request, username=username, password=password)
@@ -142,6 +144,14 @@ def userPage(request):
     context = {'orders':orders, 'total_orders':total_orders, 'delivered_orders':delivered_orders, 'pending_orders':pending_orders}
 
     return render(request, 'accounts/user.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
+def accountSettings(request):
+
+    context={}
+
+    return render(request, 'accounts/account_settings.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
