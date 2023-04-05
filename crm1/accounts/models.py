@@ -5,9 +5,11 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
 
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
 
     # This one to one field means that the user can have one customer and the customer can only have one user.
+
+    # "blank=True" means that we can create a customer without a user attached to it.
 
     # "models.CASCADE" means that whenever the User is deleted, it deletes the relationship to the customer.
 
@@ -17,7 +19,7 @@ class Customer(models.Model):
 
     email = models.CharField(max_length=200, null=True)
 
-    profile_pic = models.ImageField(null = True, blank = True)
+    profile_pic = models.ImageField(default="random.jpeg", null = True, blank = True)
 
     # "auto_now_add" creates a snapshot of date and time when the customer is added.
 

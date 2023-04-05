@@ -22,7 +22,7 @@ from .decorators import *
 
 from .models import *
 
-from .forms import OrderForm, CreateUserForm
+from .forms import OrderForm, CreateUserForm, CustomerForm
 
 from .urls import *
 
@@ -148,8 +148,19 @@ def userPage(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
 def accountSettings(request):
+    customer = request.user.customer # This is going to get us the logged in user.
 
-    context={}
+    form = CustomerForm(instance=customer)
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+
+        # here, request.POST is used to send data while request.FILES contains all the uploaded files submitted in a form.
+
+        if form.is_valid():
+            form.save()
+
+    context={'form':form}
 
     return render(request, 'accounts/account_settings.html', context)
 
@@ -178,7 +189,11 @@ def customer(request, pk):
     # We are gonna query all the orders, then throw those into this filter (myFilter) and based on our request data, we are finally going to filter this data down.
 
     # GET is used to retrieve data and POST is used to send data.
-
+    '''
+    if not request.GET:
+        
+        orders = Order.objects.all()
+    '''
     orders = myFilter.qs
 
     # This redefines the variable "orders" and finally renders the filtered data.
