@@ -45,7 +45,7 @@ def registerPage(request):
 
             # This allows us to get only the username from the form.
 
-            group = Group.objects.get(name='customer')
+            '''group = Group.objects.get(name='customer')
 
             user.groups.add(group)
 
@@ -53,7 +53,7 @@ def registerPage(request):
 
                 # This means that the "user" in the "customer" model which is actually the "User" is now equal to the "user" just created.
 
-            name=user.username)
+            name=user.username)'''
             
             messages.success(request, "Account was created for '" + username + "'.")
 

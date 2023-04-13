@@ -9,6 +9,10 @@ class Customer(models.Model):
 
     # This one to one field means that the user can have one customer and the customer can only have one user.
 
+    # "Null=True" means that the field can be left empty and will not throw a database integrity error. When a field has "null=True", it means that the database will store a NULL value if no value is supplied for that field.
+
+    # "blank=True" is used for form validation, and it allows a field to be left empty when the form is submitted. If a field is defined with "blank=True", it means that the field is not required to have a value when the form is submitted. 
+
     # "blank=True" means that we can create a customer without a user attached to it.
 
     # "models.CASCADE" means that whenever the User is deleted, it deletes the relationship to the customer.
